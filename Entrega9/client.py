@@ -18,28 +18,22 @@ def main():
         elif option == '-p':
             port = int(argument)
             
-    # Crear socket TCP/IP
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
-    # Conexión del socket
-    print("Conexión establecida. Host: {}, Port: {}".format(host,port))
-    s.connect((host, port))
-
     try:
-        # Enviando datos
-        message = "Hola Mundo"
-        s.send(message)
-         
-        """
-        # Buscando respuesta
-        amount_received = 0
-        amount_expected = len(message)
+        # Crear socket TCP/IP
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
-        while amount_received < amount_expected:
-            data = s.recv(1024).decode()
-            amount_received += len(data)
-            print("Recibiendo %s", data)
-        """
+        # Conexión del socket
+        print("Conexión establecida. Host: {}, Port: {}".format(host,port))
+        
+        s.connect((host, port))
+        
+        message = False
+        
+        while message != True:
+            message = str(input('Ingrese la palabra a devolver en MAYUS: '))
+            s.send(message.encode())
+            answerServer = s.recv(1024).decode()
+            print(answerServer)
         
     finally:
         # Cerrando conexión
