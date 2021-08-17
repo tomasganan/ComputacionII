@@ -41,7 +41,6 @@ def main():
             datetime = datetime.now().strftime("%d/%m/%Y %H:%M")
             with open(logFile, 'a') as file:
                 file.write('[' + datetime + '] ||| ' + comando + '\n')
-        
     finally:
         # Cerrando conexión
         print("Cerrando conexión")

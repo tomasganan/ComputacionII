@@ -63,7 +63,6 @@ def main():
             print("Conexion desde: ", clientAddress)
             
             new_process = multiprocessing.Process(target=gnuClient, args=(clientSocket, clientAddress))
-
             process = multiprocessing.Process()
             process.start()
                 
