@@ -25,14 +25,12 @@ def gnuClient(clientSocket, clientAddress):
             try:
                 os.chdir(path)
                 clientSocket.send('Ok'.encode())
-            except FileNotFoundError:
-                clientSocket.send("El directorio no existe".encode())
 
         if comando.decode() == 'exit':
             clientSocket.send('Chau.'.encode())
             break
 
-    print('Client', address, 'disconnected')
+    print('Cliente', address)
     clientSocket.close()
 
 def main():

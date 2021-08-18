@@ -38,9 +38,9 @@ def main():
             answerServer = s.recv(1024).decode()
             print(answerServer)
 
-            datetime = datetime.now().strftime("%d/%m/%Y %H:%M")
+            time = datetime.now().strftime("%d/%m/%Y %H:%M")
             with open(logFile, 'a') as file:
-                file.write('[' + datetime + '] ||| ' + comando + '\n')
+                file.write('[' + time + '] ||| ' + comando + '\n')
     finally:
         # Cerrando conexión
         print("Cerrando conexión")
