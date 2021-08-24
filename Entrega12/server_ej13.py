@@ -20,15 +20,29 @@ def gnuClient(clientSocket, clientAddress):
     while True:
         comando = clientSocket.recv(2048)
 
+        if comando.decode() == 'exit':
+            clientSocket.send('Chau.'.encode())
+            break
+
         if comando.decode().startswith("cd"):
             path = comando.decode().split(" ")[1]
             try:
                 os.chdir(path)
                 clientSocket.send('Ok'.encode())
+            except FileNotFoundError:
+                clientSocket.send("No such file or directory".encode())
+            
+        with sp.Popen([comando], shell = True, universal_newlines = True, stdout = sp.PIPE, stderr = sp.PIPE) as proc:
+            procStdout, procStderr = proc.communicate()
 
-        if comando.decode() == 'exit':
-            clientSocket.send('Chau.'.encode())
-            break
+            if proc.returncode == 0 and procStdout:
+                    clientSocket.send(procStdout.encode())
+
+            elif proc.returncode == 0 and not procStdout:
+                clientSocket.send('Ok'.encode())
+
+            else:
+                clientSocket.send(procStderr.encode())
 
     print('Cliente', address)
     clientSocket.close()
@@ -47,22 +61,19 @@ def main():
     
     # Enlace de socket
     socketServer.bind(('', port))
-    print("Servidor iniciando en la direccion: ", localAddress,"y puerto: ", port)
-        
-    # Escuchando conexiones entrantes
-    socketServer.listen(5)
+    print("Servidor iniciando en la direccion:", localAddress,"y puerto:", port)
     
     while True:
-        # Esperando conexión
+        # Escuchando conexiones entrantes
         print("Esperando conexiones...")
+        socketServer.listen(5)
+        
         clientAddress, clientSocket = socketServer.accept()
         
-        try:
-            print("Conexion desde: ", clientAddress)
+        print("Conexion desde: ", clientAddress)
             
-            new_process = multiprocessing.Process(target=gnuClient, args=(clientSocket, clientAddress))
-            process = multiprocessing.Process()
-            process.start()
+        newProcess = multiprocessing.Process(target=gnuClient, args=(clientSocket, clientAddress))
+        process.start()
                 
 if __name__ == "__main__":
     main()
