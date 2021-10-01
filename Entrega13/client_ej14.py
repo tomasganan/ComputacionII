@@ -26,13 +26,6 @@ def main():
     # Conexión del socket
     s.connect((address, port))
     print("Conexión establecida. Address: {}, Port: {}".format(address,port))
-        
- 
-
-
-
-
- 
 
 if __name__ == "__main__":
     main()

@@ -16,9 +16,9 @@ def closeServer(s, frame):
     print("\n Cerrando conexiones...")
     sys.exit(0)
 
-def gnuClient(clientSocket, clientAddress):
+def gnuClient(clientSocket):
     while True:
-        comando = clientSocket.recv(2048)
+        comando = clientSocket.recv(1024)
 
         if comando.decode() == 'exit':
             clientSocket.send('Chau.'.encode())
@@ -44,7 +44,6 @@ def gnuClient(clientSocket, clientAddress):
             else:
                 clientSocket.send(procStderr.encode())
 
-    print('Cliente', address)
     clientSocket.close()
 
 def main():
@@ -72,8 +71,8 @@ def main():
         
         print("Conexion desde: ", clientAddress)
             
-        newProcess = multiprocessing.Process(target=gnuClient, args=(clientSocket, clientAddress))
-        process.start()
+        newProcess = multiprocessing.Process(target=gnuClient, args=(clientSocket, ))
+        newProcess.start()
                 
 if __name__ == "__main__":
     main()
