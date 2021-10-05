@@ -16,7 +16,6 @@ import socket
 def atenderCliente(clientSocket, lock, clientAdd):
     filename = None
     opened_file = None
-    clientSocket.send(('Hola! Los comandos son: ' + str(COMMANDS) + '\n').encode())
 
     while True:
         command = clientSocket.recv(256).decode()
@@ -52,7 +51,7 @@ def atenderCliente(clientSocket, lock, clientAdd):
         else:
             clientSocket.send(('Comando no valido.' + str(COMMANDS) + '\n').encode())
 
-    print('Client', clientAdd, 'desconectado')
+    print('Cliente', clientAdd, 'desconectado')
     clientSocket.close() 
 
 # Main
