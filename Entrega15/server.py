@@ -49,7 +49,7 @@ def atenderCliente(clientSocket, lock, clientAdd):
                 opened_file.close()
             break
         else:
-            clientSocket.send(('Comando no valido.' + str(COMMANDS) + '\n').encode())
+            clientSocket.send(('Comando no valido.''\n').encode())
 
     print('Cliente', clientAdd, 'desconectado')
     clientSocket.close() 
@@ -79,7 +79,7 @@ def main():
         while True:
             s.listen(32)
             clientSocket, conn = s.accept()
-            print("Cliente: ", conn[0], "¡conectado!")
+            print("Cliente: ", conn[0])
             newProcess = multiprocessing.Process(target=atenderCliente, args=(clientSocket, lock, conn[0]))
             newProcess.start()
 
