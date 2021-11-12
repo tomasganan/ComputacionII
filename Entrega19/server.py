@@ -6,39 +6,76 @@ Entrega 19: Server (Ejercicio 22)
 
 import sys
 import getopt
+import asyncio
+import time
+import re
 
-# Funcion calculadora
+def sum(a, b):
+    return a+b
 
-def calculator(num1, operation, num2):
-    if operation == '+':
-        result = num1 + num2
-    elif operation == '-':
-        result = num1 - num2
-    elif operation == 'x':
-        result = num1 * num2
+def res(a, b):
+    return a-b
+
+def mul(a, b):
+    return a*b
+
+def div(a, b):
+    if b != 0:
+        return a/b
     else:
-        result = num1 / num2
-    return result
+        return str(ZeroDivisionError)
 
-def main():
-    try:
-        (opt, arg) = getopt.getopt(sys.argv[1:], 'n:m:o:',["number1=", "number2=", "operation="])
+try:
+    (opt, arg) = getopt.getopt(sys.argv[1:], 'h:p:')
+    
+    for option, argument in opt:
+        if option == '-h':
+            serverIp = (argument)
+        elif option == '-p':
+            port = int(argument)
+            
+except getopt.GetoptError as e:
+    print("Error: " + str(e))
+
+# Función asíncrona
+
+async def handle(reader, writer):
+
+    num1 = await reader.read(100)
+    num2 = await reader.read(100)
+    operation = await reader.read(100)
+
+    if (operation) == 'sum':
+        result = sum(num1, num2)
+        time.sleep(1)
+        writer.write(str(result.get()).encode('utf-8'))
+
+    elif (operation) == 'res':
+        result = res(num1, num2)
+        time.sleep(1)
+        writer.write(str(result.get()).encode('utf-8'))
+
+    elif (operation) == 'mul':
+        result = mul(num1, num2)
+        time.sleep(1)
+        writer.write(str(result.get()).encode('utf-8'))
+  
+    elif (operation) == 'div':
+        result = div(num1, num2)
+        time.sleep(1)
+        writer.write(str(result.get()).encode('utf-8'))
         
-        for option, argument in opt:
-            if option == '-n':
-                num1 = int(argument)
-            elif option == '-m':
-                num2 = int(argument)
-            elif option == '-o':
-                operation = (argument)
+    await writer.drain()
+    writer.close()
 
-        if operation not in ['+', '-', 'x', '/']:
-            print("Operacion invalida")
-        else:
-            print(num1, operation, num2, "=", calculator(num1, operation, num2))
+async def main():
+    
+    server = await asyncio.start_server(handle, serverIp, port)
 
-    except getopt.GetoptError as e:
-        print("Error: " + str(e))
+    async with server:
+        await server.serve_forever()
+
+asyncio.run(main())
 
 if __name__ == '__main__':
     main()
